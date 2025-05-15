@@ -15,7 +15,7 @@ gcloud projects list
 ### Switch Project
 
 ```bash
-gcloud config set projrct [project-id]
+gcloud config set project [project-id]
 ```
 
 
