@@ -1,0 +1,22 @@
+replicaCount: 1
+image:
+  repository: ram1uj/easy-recipes
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+    type: LoadBalancer
+    port: 80
+    selector:
+        app: easy-recipes
+
+ingress:
+    enabled: false
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
