@@ -3,4 +3,6 @@ kind: ConfigMap
 metadata:
   name: spring-boot-config
 data:
-  APP_MESSAGE: 'Ee Sala Cup Namdu'
+  message: 'Ee Sala Cup Namdu'
+  version: '1.0.0'
+  author: 'Ramanuj'

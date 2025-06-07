@@ -20,8 +20,8 @@ spec:
             - name: APP_MESSAGE
               valueFrom:
                 configMapKeyRef:
-                  name: spring-boot-config
-                  key: APP_MESSAGE
+                    name: spring-boot-config
+                    key: message
 
 
 
