@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-container
-          image: ram1uj/spring-boot
+          image: ram1uj/spring-boot:v1
           ports:
             - containerPort: 5000
           env:
