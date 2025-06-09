@@ -9,8 +9,10 @@ services:
     image: jenkins/jenkins:lts
     container_name: jenkins-server
     ports:
-      - "9000:8080"
+      - "9090:8080"
       - "50000:50000"
+    security_opt:
+      - seccomp:unconfined
     volumes:
       - jenkins_data:/var/jenkins_home
 
