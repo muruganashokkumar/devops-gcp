@@ -7,7 +7,7 @@ version: '3.8'
 services:
   jenkins:
     image: jenkins/jenkins:lts
-    container_name: jenkins-server
+    container_name: jenkins-docker
     ports:
       - "9090:8080"
       - "50000:50000"
@@ -41,7 +41,7 @@ volumes:
 4. **Get the initial admin password**:
 
    ```bash
-   docker exec jenkins-server cat /var/jenkins_home/secrets/initialAdminPassword
+   docker exec jenkins-docker cat /var/jenkins_home/secrets/initialAdminPassword
    ```
 
 5. Open your browser at:
@@ -60,6 +60,29 @@ To allow Jenkins to run Docker commands (e.g., for building images):
     volumes:
       - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+```
+
+
+## Install Docker inside the Jenkins container
+
+```bash
+
+docker exec -it -u 0 jenkins-docker bash
+```
+
+Then inside the container, run:
+
+
+```bash
+apt-get update && apt-get install -y docker.io
+usermod -aG docker jenkins
+exit
+```
+
+### Restart the container
+
+```bash
+docker restart jenkins-docker
 ```
 
 
