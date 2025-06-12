@@ -46,15 +46,23 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+//         stage('Deploy') {
+//             steps {
+//                 sh 'docker stop spring-boot || true'
+//                 sh 'docker rm spring-boot || true'
+//                 sh 'docker pull ram1uj/spring-boot:latest'
+// //                 sh 'docker run -p 5000:5000 --name spring-boot -d --security-opt seccomp=unconfined spring-boot'
+//                 sh 'docker run -d -p 5000:5000 --name spring-boot ram1uj/spring-boot:latest'
+//             }
+//         }
+
+        stage('Deploy to Kubernetes') {
             steps {
-                sh 'docker stop spring-boot || true'
-                sh 'docker rm spring-boot || true'
-                sh 'docker pull ram1uj/spring-boot:latest'
-//                 sh 'docker run -p 5000:5000 --name spring-boot -d --security-opt seccomp=unconfined spring-boot'
-                sh 'docker run -d -p 5000:5000 --name spring-boot ram1uj/spring-boot:latest'
+                sh 'kubectl delete deployment spring-boot-app || true'
+                sh 'kubectl apply -f .'
+                sh 'kubectl rollout status deployment/spring-boot-app'
             }
-        }
+           }
 
        }
 
