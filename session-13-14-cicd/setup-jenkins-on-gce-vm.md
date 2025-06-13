@@ -1,129 +1,160 @@
-# Setup a VM on Google Compute Engine (GCE)
 
-## Install Required Tools
+# GCE VM Setup for Jenkins + Docker + Kubernetes (Minikube/GKE)
 
-Update package list:
+## 1. Setup a VM on GCE
+
+Create a new Virtual Machine instance on Google Compute Engine (GCE) with Ubuntu OS.
+
+---
+
+## 2. Install Required Packages
+
+### Update Packages
 
 ```bash
 sudo apt update -y
 ```
 
-Install Git:
+### Install Git, Java, Maven
 
 ```bash
 sudo apt install git -y
-```
-
-Install Java:
-
-```bash
 sudo apt install default-jdk -y
-```
-
-Install Maven:
-
-```bash
 sudo apt install maven -y
 ```
 
-## Install Jenkins
+---
 
-Add Jenkins key and repository:
+## 3. Install Jenkins
+
+### Add Jenkins Repository and Key
 
 ```bash
-sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
 
-echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | \
-sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/" | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
 ```
 
-Update package list:
+### Install Jenkins
 
 ```bash
 sudo apt-get update
-```
-
-Install Jenkins:
-
-```bash
 sudo apt-get install jenkins -y
 ```
 
-Start Jenkins:
+### Start Jenkins
 
 ```bash
 sudo systemctl start jenkins
 ```
 
-Enable Jenkins to start at boot:
+### Enable Jenkins to Start on Boot
 
 ```bash
 sudo systemctl enable jenkins
 ```
 
-## Get Jenkins Admin Password
+### Retrieve Admin Password
 
 ```bash
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
 
-Example output:
+> Example output: `a06a10b4c80a4ca08c70baf638407096`
 
-```
-a06a10b4c80a4ca08c70baf638407096
-```
+---
 
-## Add Firewall Rule for Port 8080
+## 4. Access Jenkins
 
-Create a new firewall rule in the GCP Console to allow **TCP:8080** so Jenkins can be accessed externally.
+* Add a firewall rule to allow traffic on **port 8080**.
+* Open your browser and visit:
+  `http://<your-vm-external-ip>:8080`
+* Complete the setup by installing the suggested plugins.
 
-## Access Jenkins
+---
 
-Open a browser and go to:
+## 5. Install Docker
 
-```
-http://<external-ip>:8080
-```
+Refer to official Docker documentation:
+[Docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 
-Install the suggested or selected plugins as prompted.
-
-## Install Docker
-
-Refer to the official documentation:
-
-[https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
-
-After installation, add your user to the Docker group:
+### Post-install: Add Permissions
 
 ```bash
 sudo usermod -aG docker $USER && newgrp docker
 ```
 
-## Install `kubectl`
+### Allow Jenkins to Access Docker
+
+```bash
+sudo usermod -a -G docker jenkins
+```
+
+---
+
+## 6. Install `kubectl`
+
+### Install via Snap
 
 ```bash
 sudo snap install kubectl --classic
 ```
 
-## Install GCP GKE Auth Plugin
+---
+
+## 7. Install GCP Auth Plugin for GKE
 
 ```bash
 sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
 ```
 
-Authenticate with Google Cloud:
+---
+
+## 8. Authenticate with GCP
 
 ```bash
 gcloud auth login
 ```
 
-## Create a Kubernetes Cluster on GKE
+---
 
-Use the GCP Console or CLI to create a new Kubernetes cluster.
+## 9. Create and Connect to GKE Cluster
 
-## Connect to the Cluster
+* Use GCP Console or CLI to create a Kubernetes cluster.
+* Connect using:
 
-```bash
-gcloud container clusters get-credentials <CLUSTER_NAME> --zone <ZONE> --project <PROJECT_ID>
-```
+  ```bash
+  gcloud container clusters get-credentials <cluster-name> --zone <zone> --project <project-id>
+  ```
+
+---
+
+## 10. Jenkins Access to GKE
+
+### Step 1: Create GCP Service Account
+
+In GCP Console:
+
+* Navigate to **IAM & Admin → Service Accounts**
+* Click **"Create Service Account"**
+
+### Step 2: Assign Roles
+
+* **Kubernetes Engine Admin**
+* **Service Account User**
+
+### Step 3: Create and Download JSON Key
+
+* Go to the **Keys** tab.
+* Click **"Add Key" → "Create new key" → Select JSON**
+* Download and save the `.json` key file.
+
+### Step 4: Add the Key to Jenkins
+
+* Go to **Jenkins Dashboard → Manage Jenkins → Credentials**
+* Add the `.json` file as a **Secret File Credential**
+* Use this in your pipeline to authenticate with GCP.
 

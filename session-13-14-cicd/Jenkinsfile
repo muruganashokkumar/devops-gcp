@@ -39,8 +39,8 @@ pipeline {
                  }
         stage('Push Docker Image') {
             steps {
-              withCredentials([string(credentialsId: 'dockerhub_pdw', variable: 'docker')]){
-                        sh 'docker login -u ram1uj -p ${docker}'
+              withCredentials([string(credentialsId: 'dockerhub_pdw', variable: 'dockerhub_pdw')]){
+                        sh 'docker login -u ram1uj -p ${dockerhub_pdw}'
                         sh 'docker tag spring-boot:latest ram1uj/spring-boot:latest'
                         sh 'docker push ram1uj/spring-boot:latest'
                 }
