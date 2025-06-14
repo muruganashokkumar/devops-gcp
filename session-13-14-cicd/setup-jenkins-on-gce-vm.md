@@ -108,31 +108,20 @@ sudo snap install kubectl --classic
 ## 7. Install GCP Auth Plugin for GKE
 
 ```bash
+sudo apt-get install apt-transport-https ca-certificates gnupg curl
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+sudo apt-get update
+
 sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
 ```
 
----
 
-## 8. Authenticate with GCP
 
-```bash
-gcloud auth login
-```
-
----
-
-## 9. Create and Connect to GKE Cluster
-
-* Use GCP Console or CLI to create a Kubernetes cluster.
-* Connect using:
-
-  ```bash
-  gcloud container clusters get-credentials <cluster-name> --zone <zone> --project <project-id>
-  ```
-
----
-
-## 10. Jenkins Access to GKE
+## 8. Jenkins Access to GKE
 
 ### Step 1: Create GCP Service Account
 
@@ -145,6 +134,26 @@ In GCP Console:
 
 * **Kubernetes Engine Admin**
 * **Service Account User**
+* **Viewer**
+
+### Optionally Using the Gcloud CLI:
+
+```bash
+
+gcloud projects add-iam-policy-binding <project-name> \
+    --member="serviceAccount:<service-account-email>" \
+    --role="roles/container.admin"
+
+gcloud projects add-iam-policy-binding <project-name> \
+    --member="serviceAccount:<service-account-email>" \
+    --role="roles/iam.serviceAccountUser"
+
+gcloud projects add-iam-policy-binding <project-name> \
+    --member="serviceAccount:<service-account-email>" \
+    --role="roles/viewer"
+
+
+```
 
 ### Step 3: Create and Download JSON Key
 
