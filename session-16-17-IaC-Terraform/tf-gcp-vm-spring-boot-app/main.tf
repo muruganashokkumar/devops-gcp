@@ -4,10 +4,12 @@ provider "google" {
   zone    = "asia-south1-a"
 }
 
-resource "google_compute_instance" "app_server" {
-  name         = "example-app-server"
-  machine_type = "e2-micro"
+resource "google_compute_instance" "default" {
+  name         = "app-server"
+  machine_type = "e2-medium"
   zone         = "asia-south1-a"
+
+  tags = ["http-server"]
 
   boot_disk {
     initialize_params {
@@ -17,10 +19,7 @@ resource "google_compute_instance" "app_server" {
 
   network_interface {
     network = "default"
-
-    access_config {
-      // This is needed to assign a public IP
-    }
+    access_config {}
   }
 
   metadata_startup_script = <<-EOF
@@ -35,26 +34,10 @@ resource "google_compute_instance" "app_server" {
     sudo git clone https://github.com/ramanujds/spring-boot /app
     cd /app
     sudo mvn clean package -DskipTests
-    sudo nohup java -jar target/spring-boot-aws.jar --server.port=80 &
+    sudo java -jar target/spring-boot-aws.jar --server.port=80
   EOF
-
-  tags = ["http-server"]
 }
 
-resource "google_compute_firewall" "default_http" {
-  name    = "default-allow-http"
-  network = "default"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["80"]
-  }
-
-  target_tags = ["http-server"]
-  direction   = "INGRESS"
-  source_ranges = ["0.0.0.0/0"]
-}
-
-output "external_ip" {
-  value = google_compute_instance.app_server.network_interface[0].access_config[0].nat_ip
+output "instance_public_ip" {
+  value = google_compute_instance.default.network_interface[0].access_config[0].nat_ip
 }
