@@ -5,7 +5,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "my_dev_vm" {
-  name         = "my-prod-vm"
+  name         = "my-dev-vm"
   machine_type = "e2-medium"
   zone         = "asia-south1-a"
 
@@ -25,4 +25,9 @@ resource "google_compute_instance" "my_dev_vm" {
     }
   }
 
+
+}
+
+output "external_ip" {
+  value = google_compute_instance.my_dev_vm.network_interface[0].access_config[0].nat_ip
 }
