@@ -25,12 +25,17 @@ resource "google_compute_instance" "app_server" {
 
   metadata_startup_script = <<-EOF
     #!/bin/bash
-    apt update -y
-    apt install -y default-jdk maven git
-    git clone https://github.com/ramanujds/spring-boot
-    cd spring-boot
-    mvn clean package -DskipTests
-    nohup java -jar target/spring-boot-aws.jar --server.port=80 &
+    sudo apt update -y
+    sudo apt install -y wget gnupg software-properties-common
+    sudo add-apt-repository -y ppa:openjdk-r/ppa
+    sudo apt update -y
+    sudo apt install -y openjdk-21-jdk
+    sudo apt install maven -y
+    sudo apt install git -y
+    sudo git clone https://github.com/ramanujds/spring-boot /app
+    cd /app
+    sudo mvn clean package -DskipTests
+    sudo nohup java -jar target/spring-boot-aws.jar --server.port=80 &
   EOF
 
   tags = ["http-server"]
