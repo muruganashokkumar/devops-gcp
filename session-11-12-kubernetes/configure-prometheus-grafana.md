@@ -15,6 +15,7 @@ helm repo update
 
 helm install grafana grafana/grafana --version 8.12.0
 
+kubectl expose service grafana --type=NodePort --target-port=80 --name=grafana-ext
 
 minikube service grafana --url
 

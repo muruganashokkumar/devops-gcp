@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "app_server" {
-  ami                    = "ami-020cba7c55df1f615"
+  ami                    = "ami-09e6f87a47903347c"
   instance_type          = "t2.micro"
   vpc_security_group_ids = ["sg-096e7821981a6b2a8"]
 
@@ -14,14 +14,10 @@ resource "aws_instance" "app_server" {
 
   user_data = <<-EOF
     #!/bin/bash
-    sudo apt update -y
-    sudo apt install default-jdk -y
-    sudo apt install maven -y
-    sudo apt install git -y
-    git clone https://github.com/ramanujds/spring-boot
-    cd spring-boot
-    mvn clean package -DskipTests
-    sudo java -jar target/spring-boot-aws.jar --server.port=80
+    sudo yum update -y
+    sudo yum install docker -y
+    sudo service docker start
+    sudo docker run -d -p 80:80 --name easy-recipes -d ram1uj/easy-recipes:latest
   EOF
 }
 
