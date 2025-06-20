@@ -11,7 +11,7 @@ resource "google_cloud_run_service" "default" {
   template {
     spec {
       containers {
-        image = "us-central1-docker.pkg.dev/my-kubernetes-project-456513/my-docker-repo/spring-boot"
+        image = "ram1uj/spring-boot"
         ports {
           container_port = 5000
         }
