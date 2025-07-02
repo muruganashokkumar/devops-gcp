@@ -1,0 +1,39 @@
+Running Kubernetes on AWS EC2
+
+sudo apt-get update
+
+Install Docker
+
+Official Docs : 
+https://docs.docker.com/engine/install/ubuntu/
+
+To install driver and give the permissions to group
+
+sudo usermod -aG docker $USER && newgrp docker
+
+
+
+minikube start --driver=docker
+
+
+install kubectl
+
+
+sudo snap install kubectl --classic
+
+
+SSH Tunnel
+
+http://192.168.49.2:32748
+
+
+ssh -i [private_key.pem] -L [local_port]:localhost:[remote_port] [username]@[remote_host]
+
+
+
+ssh -i "k8s-ec2-key.pem" -L 8000:127.0.0.1:39283 ubuntu@ec2-54-173-23-217.compute-1.amazonaws.com
+
+
+
+
+

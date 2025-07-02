@@ -1,0 +1,17 @@
+networks:
+  app-network:
+
+services:
+  hello-world:
+    image: ram1uj/hello-world
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+  easy-recipes:
+    image: ram1uj/easy-recipes
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
